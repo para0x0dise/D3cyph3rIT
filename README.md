@@ -1,2 +1,81 @@
 # D3cyph3rIT
-This tool is used to extract and decrypt embedded payload by CypherIT crypter.
+CypherIT is a well-known crypter used to encrypt and embed executable payloads inside compiled AutoIT scripts. 
+It also provides persistence and anti-analysis capabilities to evade static and dynamic detection.
+
+Checkpoint wrote about it in 2019 which explains more about it [checkpoint](https://research.checkpoint.com/2019/decypherit-all-eggs-in-one-basket/)
+
+## What is new?
+Earlier CypherIT versions embedded the compiled AutoIT script directly inside the PE resources.
+
+Modern variants changed the packing strategy:
+
+- Files are stored inside a `CAB/NSIS` archive embedded in resources
+- A batch script reconstructs and concatenates required components at runtime (The compiled AutoIT Script and AutoIt interpreter)
+- The final payload is encrypted with `RC4` and compressed using `LZNT1`
+
+
+## Tool's Features
+- [✓] Locate and extract embedded `CAB/NSIS` archives from PE resources
+- [✓] Parse embedded batch script to extract the variables and commands to reconstruct concatenated components
+- [✓] Extract and decompile the compiled AutoIT script (via [`AutToExe.exe`](https://github.com/daovantrong/myAutToExe))
+- [✓] Define the deobfuscation function and delimiter
+- [✓] Extract the `RC4 Key` and decrypt the payload.
+- [✓] Decompress the payload using `LZNT1` decompression algorithm.
+
+
+## How to use?
+
+```bash
+# Single file   
+python main.py -f <path to the malware obfuscated file>
+
+# Directory
+python main.py -d <path to the directory of malware obfuscated files>
+```
+
+## Tested on
+```
+13d2b769d5296310c2c0edbb6474a981d022eed4bfa78dcc2527b62935827ae5
+148071e2c945617372ee205c023b223b40519d546d991bd3c4dbcfdf60ab70ee
+15a88e20e970e86f94a6328c579552bd2469329bb258d2672e7c85bfb2946502
+1883e59980185d3b3e43d2af76b0a8c4e51c0cbd19b06253f2e16558d23c9a9c
+192aa31ea7cf2449015d4e26ddff8be8c629cf7d71d3dcdcce9e67919b1121ca
+2072d44596690890bf4e9d297296f81409f82346b8e2e91c55d628cb35c54d4a
+2083729506001a46f57302bcfa22b60b5299ba6b57eea6b82c587a10b61b759c
+30c51e07b720eb37cd081c34a0308d78df20a90495058426058ff92441766219
+4081a4c50d6591f1075a29df14b5399719d005457c844f9213a809a325e37b23
+47633b39ac044e50fd5667ae26c676dfbd215aff8ee28e066a9ed8dc67ae1e56
+47d7c773c88f5119c41b22fcb4318860bdd1c331fb0d5b1fae5a2023fa02cd3f
+50ae958eeea4e1df1618d0739c93a1c5b7b56946da6d8e8ce3aed17abf3be548
+52c8f8a24b3316b92cb36c3eb9c0cc4467a000176c5208b5611ed092f05289d4
+54f6e742463d075bc1afa87ce302827ef813da9a3e4db303ab7c0beb72753ca5
+570130baff465b9d23b4dab752fa3923c92a538116f1d161b760b89c4cfe835c
+5a8b05f69b2fc792786fd0f2c1346153fd32678ae3e90dadf112db98093d2da1
+5b959934fb0324eede51db8ac523db1a9345f763880e9c1c8a1c41d21a2e8236
+5cb1c92c11f7cfb5534d4db9ed14fbe12d0342d2f517390444fd0db61a66da1c
+69f00e73325024f11452ccc933dca49298eda83b56ac28e2549edbe2b7010c40
+70428c1fd7f8879239050155e0a37ed65c6997855e8a8420e2d2f09598ba5cd6
+7132556008221a4eff0c8a586e48bcceb41b50e941e737fb90a0993823e26668
+738210b7ab282c0a2357a333a6ce02d61fcc1f9c1ddb69d380c9fa9bee686cee
+7c2103835be9d5494a05a47da32576c049cc8aa2cacd82bb541606bb98d80a5e
+8057668808e5529f8deabb384d51f5b914b1a2516dd1b03f6b1a3b99748fb808
+81084878c91fdd523b75c82ad788393e43e668093d3526210a89ce1fb32826b6
+83a582c8a37e24876bf2a84634a363c3c111b2ed6770caefd9984306ece37fa6
+86d98c6b9a1f0fdee1fd1f898b8799180a7c9368e6b365a95ede0d8f49a6ad41
+88f2ceecae19a4086ed51ad526d2ac7fda5f645ad15a5ff916066b1f46e52526
+8c422b5850ca48c7ec24badee9d74467eb0426561cf60bda669c10aaab02c755
+94a241e26a55a46726dd848ea27c1431b6d580d22ec268827098df173d0233c8
+9b4e1688b372fb2d86ab88a68db7c99bf039c007bea409dfd70081a5b0e3104c
+b520bc7fd5f24522b2f3c8fc01ef1b49e2a6f69e7f12b75a0b3d89b7272545a5
+bb9a85130e66592a8cd8dee29951d1200616c68e01951da9d950cd26d110e356
+c4e1711c4029933d1a4ec238edf1de5b275e73d7422305447742e5b713a478a0
+c94e22e1bdbe15a69f445887e28df6e8ad09ae02f54e34014336b4611d4aa98b
+ccfe7863d053576173a96acb12a7e397ff1e4ecfb6c7c0761bd1d75b33862440
+ced6f0e86377df269f92007123890005f6a96931901eca9b6b9da87fe5fab48f
+d309efc04c1c6d7a8ebd5c2d5780b44cf6a6cd27da5323db80c1068f9e7b3f71
+d550151f091a45814f26a4fbb852f85696215fd23fb4adf34b455af19ef1a41b
+d5e3356ace034ad3b30bcaf4a1986ffe4297907b11bbbed3bab893aa0dde9cca
+e2ad9332eef91e4b89ecbbc2ed2942e49be6a6668d6cbdf4fca710c298c2d9b7
+ec5744a8477c6506099751a74c85c6087f737044a51bd6e2702f7555ee61876f
+fd693437257c90420fdb4655ca24afbf90edec474e727643dda46c77b25f711b
+```
