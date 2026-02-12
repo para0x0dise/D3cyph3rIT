@@ -1,4 +1,4 @@
-# D3cyph3rIT -  Obfuscation is noise. Patterns are signal
+# D3cyph3rIT -  Obfuscation is noise, Patterns are signal
 CypherIT is a well-known crypter used to encrypt and embed executable payloads inside compiled AutoIT scripts. 
 It also provides persistence and anti-analysis capabilities to evade static and dynamic detection.
 
