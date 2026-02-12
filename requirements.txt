@@ -1,0 +1,4 @@
+python-magic
+python-magic-bin
+pefile
+lznt1
